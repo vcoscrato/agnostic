@@ -11,10 +11,10 @@ Encoding: UTF-8
 URL: http://github.com/vcoscrato/agnostic
 BugReports: http://github.com/vcoscrato/agnostic
 Depends: R (>= 2.14.0)
-LazyData: TRUE
 Imports: FNN
 Suggests: ggplot2,
 	knitr,
 	dplyr,
 	tidyr
+LazyData: TRUE
 RoxygenNote: 6.0.1

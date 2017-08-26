@@ -2,7 +2,7 @@
 % Please edit documentation in R/agnostic.t.test.R
 \name{agnostic.t.test}
 \alias{agnostic.t.test}
-\title{Title Agnostic Student's t-Test}
+\title{Agnostic Student's t-Test}
 \usage{
 agnostic.t.test(x, y = 0, alternative = "two.sided", alpha = 0.05,
   beta = 0.05, paired = FALSE)
