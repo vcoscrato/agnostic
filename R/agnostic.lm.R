@@ -13,46 +13,47 @@
 #' @param ... additional arguments to be passed to the low level regression fitting functions (see below).
 #'
 #' @return lm returns an object of class "agnostic.lm" or for multiple responses of class c("agnostic.mlm", "agnostic.lm"). There are print and summary methods availiable for these.
-#' @export
+#' @export agnostic.lm
+#' @S3method print.agnostic.lm
 #'
 #' @examples
 #' mod1 <- agnostic.lm(rnorm(100) ~ rexp(100))
 #' summary(mod1)
-agnostic.lm <- function(formula, data, subset, weights, na.action, method = "qr", 
-                        model = TRUE, x = FALSE, y = FALSE, qr = TRUE, singular.ok = TRUE, 
-                        contrasts = NULL, offset, ...) 
+agnostic.lm <- function(formula, data, subset, weights, na.action, method = "qr",
+                        model = TRUE, x = FALSE, y = FALSE, qr = TRUE, singular.ok = TRUE,
+                        contrasts = NULL, offset, ...)
 {
   ret.x <- x
   ret.y <- y
   cl <- match.call()
   mf <- match.call(expand.dots = FALSE)
-  m <- match(c("formula", "data", "subset", "weights", "na.action", 
+  m <- match(c("formula", "data", "subset", "weights", "na.action",
                "offset"), names(mf), 0L)
   mf <- mf[c(1L, m)]
   mf$drop.unused.levels <- TRUE
   mf[[1L]] <- quote(stats::model.frame)
   mf <- eval(mf, parent.frame())
-  if (method == "model.frame") 
+  if (method == "model.frame")
     return(mf)
-  else if (method != "qr") 
-    warning(gettextf("method = '%s' is not supported. Using 'qr'", 
+  else if (method != "qr")
+    warning(gettextf("method = '%s' is not supported. Using 'qr'",
                      method), domain = NA)
   mt <- attr(mf, "terms")
   y <- model.response(mf, "numeric")
   w <- as.vector(model.weights(mf))
-  if (!is.null(w) && !is.numeric(w)) 
+  if (!is.null(w) && !is.numeric(w))
     stop("'weights' must be a numeric vector")
   offset <- as.vector(model.offset(mf))
   if (!is.null(offset)) {
-    if (length(offset) != NROW(y)) 
-      stop(gettextf("number of offsets is %d, should equal %d (number of observations)", 
+    if (length(offset) != NROW(y))
+      stop(gettextf("number of offsets is %d, should equal %d (number of observations)",
                     length(offset), NROW(y)), domain = NA)
   }
   if (is.empty.model(mt)) {
     x <- NULL
-    z <- list(coefficients = if (is.matrix(y)) matrix(, 0, 
-                                                      3) else numeric(), residuals = y, fitted.values = 0 * 
-                y, weights = w, rank = 0L, df.residual = if (!is.null(w)) sum(w != 
+    z <- list(coefficients = if (is.matrix(y)) matrix(, 0,
+                                                      3) else numeric(), residuals = y, fitted.values = 0 *
+                y, weights = w, rank = 0L, df.residual = if (!is.null(w)) sum(w !=
                                                                                 0) else if (is.matrix(y)) nrow(y) else length(y))
     if (!is.null(offset)) {
       z$fitted.values <- offset
@@ -61,10 +62,10 @@ agnostic.lm <- function(formula, data, subset, weights, na.action, method = "qr"
   }
   else {
     x <- model.matrix(mt, mf, contrasts)
-    z <- if (is.null(w)) 
-      lm.fit(x, y, offset = offset, singular.ok = singular.ok, 
+    z <- if (is.null(w))
+      lm.fit(x, y, offset = offset, singular.ok = singular.ok,
              ...)
-    else lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, 
+    else lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok,
                  ...)
   }
   class(z) <- c(if (is.matrix(y)) "agnostic.mlm", "agnostic.lm")
@@ -74,13 +75,27 @@ agnostic.lm <- function(formula, data, subset, weights, na.action, method = "qr"
   z$xlevels <- .getXlevels(mt, mf)
   z$call <- cl
   z$terms <- mt
-  if (model) 
+  if (model)
     z$model <- mf
-  if (ret.x) 
+  if (ret.x)
     z$x <- x
-  if (ret.y) 
+  if (ret.y)
     z$y <- y
-  if (!qr) 
+  if (!qr)
     z$qr <- NULL
   z
+}
+
+print.agnostic.lm <- function (x, digits = max(3L, getOption("digits") - 3L), ...)
+{
+  cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"),
+      "\n\n", sep = "")
+  if (length(coef(x))) {
+    cat("Coefficients:\n")
+    print.default(format(coef(x), digits = digits), print.gap = 2L,
+                  quote = FALSE)
+  }
+  else cat("No coefficients\n")
+  cat("\n")
+  invisible(x)
 }

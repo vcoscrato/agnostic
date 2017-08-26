@@ -10,7 +10,8 @@
 #' @param ... further arguments passed to or from other methods.
 #'
 #' @return A list countaining various metrics from a agnostic linear model fit, there is a print method availiable for this.
-#' @export
+#' @S3method summary.agnostic.lm
+#' @S3method print.summary.agnostic.lm
 #'
 #' @examples
 #' mod1 <- agnostic.lm(rnorm(100) ~ rexp(100))
@@ -145,10 +146,10 @@ summary.agnostic.lm <- function(object, alpha = 0.05, beta = 0.05, d = NULL,
       g=ggplot(data=probs ,aes(x=d.grid, y=prob, group=Decision)) +
         geom_line(aes(linetype=Decision, color=Decision),size=1.5)+
         facet_wrap( ~ coefficient, ncol=round(sqrt(length(elements.inverse))))+
-        ylab("Probability of the Decision")+xlab("Cohen's d effect size")+ 
-        geom_hline(yintercept=beta,color="black")+ 
+        ylab("Probability of the Decision")+xlab("Cohen's d effect size")+
+        geom_hline(yintercept=beta,color="black")+
         annotate("text", min(prob.accept$d.grid), beta+0.05,size=7, label = "beta",parse=TRUE,color="black")+
-        geom_hline(yintercept=alpha,color="black")+ 
+        geom_hline(yintercept=alpha,color="black")+
         annotate("text", min(prob.accept$d.grid), alpha+0.05, size=7,label = "alpha",parse=TRUE,color="black")
       print(g)
     }
@@ -182,4 +183,87 @@ summary.agnostic.lm <- function(object, alpha = 0.05, beta = 0.05, d = NULL,
     ans$na.action <- z$na.action
   class(ans) <- "summary.agnostic.lm"
   ans
+}
+
+print.summary.agnostic.lm <- function(x, digits = max(3L, getOption("digits") - 3L), symbolic.cor = x$symbolic.cor,
+                                      signif.stars = getOption("show.signif.stars"), ...)
+{
+  cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"),
+      "\n\n", sep = "")
+  resid <- x$residuals
+  df <- x$df
+  rdf <- df[2L]
+  cat(if (!is.null(x$weights) && diff(range(x$weights)))
+    "Weighted ", "Residuals:\n", sep = "")
+  if (rdf > 5L) {
+    nam <- c("Min", "1Q", "Median", "3Q", "Max")
+    rq <- if (length(dim(resid)) == 2L)
+      structure(apply(t(resid), 1L, quantile), dimnames = list(nam,
+                                                               dimnames(resid)[[2L]]))
+    else {
+      zz <- zapsmall(quantile(resid), digits + 1L)
+      structure(zz, names = nam)
+    }
+    print(rq, digits = digits, ...)
+  }
+  else if (rdf > 0L) {
+    print(resid, digits = digits, ...)
+  }
+  else {
+    cat("ALL", df[1L], "residuals are 0: no residual degrees of freedom!")
+    cat("\n")
+  }
+  if (length(x$aliased) == 0L) {
+    cat("\nNo Coefficients\n")
+  }
+  else {
+    if (nsingular <- df[3L] - df[1L])
+      cat("\nCoefficients: (", nsingular, " not defined because of singularities)\n",
+          sep = "")
+    else cat("\nCoefficients:\n")
+    coefs <- x$coefficients
+    if (!is.null(aliased <- x$aliased) && any(aliased)) {
+      cn <- names(aliased)
+      coefs <- matrix(NA, length(aliased), 4, dimnames = list(cn,
+                                                              colnames(coefs)))
+      coefs[!aliased, ] <- as.data.frame(x$coefficients)
+    }
+    coefs[,-ncol(coefs)] <- round(as.numeric(coefs[,-ncol(coefs)]), 2)
+    print(coefs)
+  }
+  cat("\nResidual standard error:", format(signif(x$sigma,
+                                                  digits)), "on", rdf, "degrees of freedom")
+  cat("\n")
+  if (nzchar(mess <- naprint(x$na.action)))
+    cat("  (", mess, ")\n", sep = "")
+  if (!is.null(x$fstatistic)) {
+    cat("Multiple R-squared: ", formatC(x$r.squared, digits = digits))
+    cat(",\tAdjusted R-squared: ", formatC(x$adj.r.squared,
+                                           digits = digits), "\nF-statistic:", formatC(x$fstatistic[1L],
+                                                                                       digits = digits), "on", x$fstatistic[2L], "and",
+        x$fstatistic[3L], "DF,  p.H0:", format.pval(pf(x$fstatistic[1L],
+                                                       x$fstatistic[2L], x$fstatistic[3L], lower.tail = FALSE),
+                                                    digits = digits), ", p.H1 =", format.pval(1-pf(x$fstatistic[1L],
+                                                                                                   x$fstatistic[2L], x$fstatistic[3L], lower.tail = FALSE),
+                                                                                              digits = digits))
+    cat("\n")
+  }
+  correl <- x$correlation
+  if (!is.null(correl)) {
+    p <- NCOL(correl)
+    if (p > 1L) {
+      cat("\nCorrelation of Coefficients:\n")
+      if (is.logical(symbolic.cor) && symbolic.cor) {
+        print(symnum(correl, abbr.colnames = NULL))
+      }
+      else {
+        correl <- format(round(correl, 2), nsmall = 2,
+                         digits = digits)
+        correl[!lower.tri(correl)] <- ""
+        print(correl[-1, -p, drop = FALSE], quote = FALSE)
+      }
+    }
+  }
+  cat("\n")
+  invisible(x)
 }
