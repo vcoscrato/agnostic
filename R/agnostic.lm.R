@@ -14,7 +14,7 @@
 #'
 #' @return lm returns an object of class "agnostic.lm" or for multiple responses of class c("agnostic.mlm", "agnostic.lm"). There are print and summary methods availiable for these.
 #' @export agnostic.lm
-#' @S3method print.agnostic.lm
+#' @S3method print,agnostic.lm
 #'
 #' @examples
 #' mod1 <- agnostic.lm(rnorm(100) ~ rexp(100))

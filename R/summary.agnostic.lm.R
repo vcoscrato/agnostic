@@ -10,8 +10,8 @@
 #' @param ... further arguments passed to or from other methods.
 #'
 #' @return A list countaining various metrics from a agnostic linear model fit, there is a print method availiable for this.
-#' @S3method summary.agnostic.lm
-#' @S3method print.summary.agnostic.lm
+#' @S3method summary,agnostic.lm
+#' @S3method print,summary.agnostic.lm
 #'
 #' @examples
 #' mod1 <- agnostic.lm(rnorm(100) ~ rexp(100))
