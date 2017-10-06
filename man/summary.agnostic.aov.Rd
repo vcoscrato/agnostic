@@ -8,6 +8,8 @@
   expand.split = TRUE, keep.zero.df = TRUE, ...)
 }
 \arguments{
+\item{object}{object of class "agnostic.aov".}
+
 \item{intercept}{logical: should intercept terms be included?}
 
 \item{split}{an optional named list, with names corresponding to terms in the model. Each component is itself a list with integer components giving contrasts whose contributions are to be summed.}
@@ -17,8 +19,6 @@
 \item{keep.zero.df}{logical: should terms with no degrees of freedom be included?}
 
 \item{...}{Arguments to be passed to or from other methods.}
-
-\item{An}{object of class "agnostic.aov".}
 }
 \value{
 An object of class c("summary.aov", "listof") or "summary.aovlist" respectively.
@@ -32,7 +32,8 @@ Summarize an Agnostic Analysis of Variance Model
 }
 \examples{
 #Test data
-obs <- c(54, 60, 59, 45, 40, 55, 47, 33, 51, 66, 44, 34, 36, 61, 49, 48, 50, 54, 62, 42, 48, 61, 60, 44)
+obs <- c(54, 60, 59, 45, 40, 55, 47, 33, 51, 66, 44, 34, 36, 61,
+49, 48, 50, 54, 62, 42, 48, 61, 60, 44)
 obs2 <- rnorm(24)
 groups <- as.factor(rep(c("A", "B", "c", "D"), 6))
 groups2 <- as.factor(rep(c("A", "D", "B", "C"), 6))

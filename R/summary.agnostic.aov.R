@@ -1,6 +1,6 @@
 #' Summarize an Agnostic Analysis of Variance Model
 #'
-#' @param An object of class "agnostic.aov".
+#' @param object object of class "agnostic.aov".
 #' @param intercept logical: should intercept terms be included?
 #' @param split an optional named list, with names corresponding to terms in the model. Each component is itself a list with integer components giving contrasts whose contributions are to be summed.
 #' @param expand.split logical: should the split apply also to interactions involving the factor?
@@ -16,7 +16,8 @@
 #'
 #' @examples
 #' #Test data
-#' obs <- c(54, 60, 59, 45, 40, 55, 47, 33, 51, 66, 44, 34, 36, 61, 49, 48, 50, 54, 62, 42, 48, 61, 60, 44)
+#' obs <- c(54, 60, 59, 45, 40, 55, 47, 33, 51, 66, 44, 34, 36, 61,
+#' 49, 48, 50, 54, 62, 42, 48, 61, 60, 44)
 #' obs2 <- rnorm(24)
 #' groups <- as.factor(rep(c("A", "B", "c", "D"), 6))
 #' groups2 <- as.factor(rep(c("A", "D", "B", "C"), 6))

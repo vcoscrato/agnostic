@@ -45,13 +45,17 @@
 #' }))
 #' colnames(probability.decisions)=decisions.names
 #' probability.decisions=cbind(mu.grid,as.data.frame(probability.decisions))
-#' probability.decisions=gather(probability.decisions,"Decision","Probability",Agnostic:`Accept H0`)
+#' probability.decisions=gather(probability.decisions,"Decision","Probability",
+#' Agnostic:`Accept H0`)
 #'
 #' theme = theme_set(theme_minimal(base_size = 26))
-#' theme = theme_update(legend.position="top", legend.title=element_blank(),panel.grid.major.x=element_blank())
+#' theme = theme_update(legend.position="top", legend.title=element_blank(),
+#' panel.grid.major.x=element_blank())
 #'
-#' ggplot()+geom_line(data=probability.decisions,aes(x=mu.grid,y=Probability,linetype=Decision,color=Decision),size=2)+
-#' geom_hline(yintercept = 0.05)+xlab(expression(mu))+geom_vline(xintercept = 0)+ylab("Probability of each decision")
+#' ggplot()+geom_line(data=probability.decisions,aes(x=mu.grid,y=Probability,
+#' linetype=Decision,color=Decision),size=2)+
+#' geom_hline(yintercept = 0.05)+xlab(expression(mu))+geom_vline(xintercept = 0)+
+#' ylab("Probability of each decision")
 agnostic.t.test <- function(x, y = 0, alternative = "two.sided", alpha = 0.05, beta = 0.05, paired = FALSE) {
   if(paired == TRUE) {
     if(length(x) != length(y)) {

@@ -21,7 +21,7 @@ agnostic.lm(formula, data, subset, weights, na.action, method = "qr",
 
 \item{method}{the method to be used; for fitting, currently only method = "qr" is supported; method = "model.frame" returns the model frame (the same as with model = TRUE, see below).}
 
-\item{model, }{x, y, qr logicals. If TRUE the corresponding components of the fit (the model frame, the model matrix, the response, the QR decomposition) are returned.}
+\item{model, x, y, qr}{logicals. If TRUE the corresponding components of the fit (the model frame, the model matrix, the response, the QR decomposition) are returned.}
 
 \item{singular.ok}{logical. If FALSE (the default in S but not in R) a singular fit is an error.}
 
