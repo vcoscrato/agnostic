@@ -1,3 +1,5 @@
+library(agnostic)
+
 # agnostic
 
 The goal of agnostic is to perform agnostic hypothesis tests in R. In order to be better user friendly, this package is designed to work similarly to R base.
