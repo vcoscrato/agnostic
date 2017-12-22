@@ -112,12 +112,16 @@ summary.agnostic.lm <- function(object, alpha = 0.05, beta = 0.05, d = NULL,
     decision[tval > c.1] <- "Reject H0"
     if(plot.power)
     {
-      theme = theme_set(theme_minimal(base_size = 20))
-      theme = theme_update(legend.position="top", legend.title=element_blank(), panel.grid.major.x=element_blank(),
-                           panel.grid.major.y=element_blank(),
-                           panel.grid.minor.y=element_blank(),
-                           panel.border = element_rect(colour = "black", fill=NA, size=0.5),
-                           axis.text.y = element_text(colour="black",size=13), axis.text.x = element_text(size=13),axis.ticks.y= element_line(colour="black"))+ theme_update(axis.ticks.length=unit(.15, "cm"),panel.spacing.y = unit(1.5, "lines"))
+      theme = ggplot2::theme_set(ggplot2::theme_minimal(base_size = 20))
+      theme = ggplot2::theme_update(legend.position="top", legend.title=ggplot2::element_blank(), panel.grid.major.x=ggplot2::element_blank(),
+                           panel.grid.major.y=ggplot2::element_blank(),
+                           panel.grid.minor.y=ggplot2::element_blank(),
+                           panel.border = ggplot2::element_rect(colour = "black", fill=NA, size=0.5),
+                           axis.text.y = ggplot2::element_text(colour="black",size=13),
+                           axis.text.x = ggplot2::element_text(size=13),
+                           axis.ticks.y= ggplot2::element_line(colour="black")) +
+                                          ggplot2::theme_update(axis.ticks.length= grid::unit(.15, "cm"),
+                                                                panel.spacing.y = grid::unit(1.5, "lines"))
       d.grid=seq(0,1,length.out = 1000)
       prob.accept=prob.reject=prob.agnostic=matrix(NA,length(d.grid),length(elements.inverse))
       colnames(prob.accept)=names(elements.inverse)
@@ -138,19 +142,20 @@ summary.agnostic.lm <- function(object, alpha = 0.05, beta = 0.05, d = NULL,
           prob.agnostic[j,i]=1-prob.reject[j,i]-prob.accept[j,i]
         }
       }
-      prob.accept=cbind("Accept",d.grid,gather(as.data.frame(prob.accept),coefficient,prob,1:ncol(prob.accept)))
-      prob.reject=cbind("Reject",d.grid,gather(as.data.frame(prob.reject),coefficient,prob,1:ncol(prob.reject)))
-      prob.agnostic=cbind("Agnostic",d.grid,gather(as.data.frame(prob.agnostic),coefficient,prob,1:ncol(prob.agnostic)))
+      prob.accept=cbind("Accept",d.grid, tidyr::gather(as.data.frame(prob.accept),coefficient,prob,1:ncol(prob.accept)))
+      prob.reject=cbind("Reject",d.grid, tidyr::gather(as.data.frame(prob.reject),coefficient,prob,1:ncol(prob.reject)))
+      prob.agnostic=cbind("Agnostic",d.grid, tidyr::gather(as.data.frame(prob.agnostic),coefficient,prob,1:ncol(prob.agnostic)))
       names(prob.accept)[1]=names(prob.reject)[1]=names(prob.agnostic)[1]="Decision"
       probs=rbind(prob.accept,prob.reject,prob.agnostic)
-      g=ggplot(data=probs ,aes(x=d.grid, y=prob, group=Decision)) +
-        geom_line(aes(linetype=Decision, color=Decision),size=1.5)+
-        facet_wrap( ~ coefficient, ncol=round(sqrt(length(elements.inverse))))+
-        ylab("Probability of the Decision")+xlab("Cohen's d effect size")+
-        geom_hline(yintercept=beta,color="black")+
-        annotate("text", min(prob.accept$d.grid), beta+0.05,size=7, label = "beta",parse=TRUE,color="black")+
-        geom_hline(yintercept=alpha,color="black")+
-        annotate("text", min(prob.accept$d.grid), alpha+0.05, size=7,label = "alpha",parse=TRUE,color="black")
+      g=ggplot2::ggplot(data=probs, ggplot2::aes(x=d.grid, y=prob, group=Decision)) +
+        ggplot2::geom_line(ggplot2::aes(linetype=Decision, color=Decision),size=1.5)+
+        ggplot2::facet_wrap( ~ coefficient, ncol=round(sqrt(length(elements.inverse))))+
+        ggplot2::ylab("Probability of the Decision")+
+        ggplot2::xlab("Cohen's d effect size")+
+        ggplot2::geom_hline(yintercept=beta,color="black")+
+        ggplot2::annotate("text", min(prob.accept$d.grid), beta+0.05,size=7, label = "beta",parse=TRUE,color="black")+
+        ggplot2::geom_hline(yintercept=alpha,color="black")+
+        ggplot2::annotate("text", min(prob.accept$d.grid), alpha+0.05, size=7,label = "alpha",parse=TRUE,color="black")
       print(g)
     }
   }

@@ -6,15 +6,15 @@ Version: 0.0.1
 Author: Victor Coscrato
 Maintainer: Victor Coscrato <vcoscrato@gmail.com>
 Description: The agnostic package performs multiple hypothesis testing under the agnostic perspective.
-License: Open
+License: MIT + file LICENSE
 Encoding: UTF-8
 URL: http://github.com/vcoscrato/agnostic
 BugReports: http://github.com/vcoscrato/agnostic
 Depends: R (>= 2.14.0)
-Imports: FNN
-Suggests: ggplot2,
-	knitr,
-	dplyr,
-	tidyr
+Imports: FNN,
+    grid,
+    ggplot2,
+    tidyr
+Suggests: knitr
 LazyData: TRUE
 RoxygenNote: 6.0.1
