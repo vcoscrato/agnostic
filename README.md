@@ -1,5 +1,3 @@
-library(agnostic)
-
 # agnostic
 
 The goal of agnostic is to perform agnostic hypothesis tests in R. In order to be better user friendly, this package is designed to work similarly to R base.
@@ -18,6 +16,8 @@ devtools::install_github("vcoscrato/agnostic")
 This example performs univariate and multivariate analysis of variance (ANOVA / MANOVA) under the agnostic perspective.
 
 ``` r
+library(agnostic)
+
 # Test data
 obs <- c(sample(20:30, size = 20, replace = TRUE))
 obs2 <- rnorm(24)
